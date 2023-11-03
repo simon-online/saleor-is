@@ -48,6 +48,11 @@ mutation DraftOrderUpdate($input: DraftOrderInput!, $id: ID!) {
           amount
         }
       }
+      undiscountedTotal {
+        gross {
+          amount
+        }
+      }
       billingAddress {
         firstName
         lastName
@@ -98,6 +103,17 @@ mutation DraftOrderUpdate($input: DraftOrderInput!, $id: ID!) {
         id
         name
       }
+      voucher {
+        id
+        code
+        used
+        usageLimit
+        onlyForStaff
+        discountValue
+        discountValueType
+        applyOncePerCustomer
+        applyOncePerOrder
+      }
       userEmail
       deliveryMethod {
         __typename
@@ -114,10 +130,10 @@ mutation DraftOrderUpdate($input: DraftOrderInput!, $id: ID!) {
 
 def draft_order_update(
     api_client,
-    id,
-    input,
+    draft_order_id,
+    input_data,
 ):
-    variables = {"id": id, "input": input}
+    variables = {"id": draft_order_id, "input": input_data}
 
     response = api_client.post_graphql(
         DRAFT_ORDER_UPDATE_MUTATION,
@@ -129,6 +145,6 @@ def draft_order_update(
     errors = data["errors"]
 
     assert errors == []
-    assert order_id == id
+    assert order_id == draft_order_id
 
     return data

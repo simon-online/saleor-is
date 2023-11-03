@@ -26,6 +26,28 @@ mutation OrderDraftCreate($input: DraftOrderCreateInput!) {
       shippingMethods {
         id
       }
+      voucher {
+        id
+        code
+        used
+        usageLimit
+        onlyForStaff
+        discountValue
+        discountValueType
+        applyOncePerCustomer
+        applyOncePerOrder
+      }
+      voucherCode
+      total {
+        gross {
+          amount
+        }
+      }
+      undiscountedTotal {
+        gross {
+          amount
+          }
+        }
       lines {
         productVariantId
         quantity
@@ -39,11 +61,6 @@ mutation OrderDraftCreate($input: DraftOrderCreateInput!) {
             amount
           }
         }
-        totalPrice {
-          gross {
-            amount
-          }
-        }
       }
     }
   }
@@ -51,8 +68,8 @@ mutation OrderDraftCreate($input: DraftOrderCreateInput!) {
 """
 
 
-def draft_order_create(api_client, input):
-    variables = {"input": input}
+def draft_order_create(api_client, input_data):
+    variables = {"input": input_data}
 
     response = api_client.post_graphql(
         DRAFT_ORDER_CREATE_MUTATION,
