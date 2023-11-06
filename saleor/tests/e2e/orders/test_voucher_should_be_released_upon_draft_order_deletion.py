@@ -1,6 +1,7 @@
 import pytest
 
 from .. import DEFAULT_ADDRESS
+from ..channel.utils import update_channel
 from ..product.utils.preparing_product import prepare_product
 from ..shop.utils.preparing_shop import prepare_shop
 from ..utils import assign_permissions
@@ -21,12 +22,12 @@ def prepare_voucher(
     voucher_discount_value,
     voucher_type,
 ):
-    input = {
+    input_data = {
         "code": voucher_code,
         "discountValueType": voucher_discount_type,
         "type": voucher_type,
     }
-    voucher_data = create_voucher(e2e_staff_api_client, input)
+    voucher_data = create_voucher(e2e_staff_api_client, input_data)
 
     voucher_id = voucher_data["id"]
     channel_listing = [
@@ -96,6 +97,14 @@ def test_voucher_should_be_released_upon_draft_order_deletion_CORE_0922(
         voucher_type="ENTIRE_ORDER",
     )
 
+    channel_update_input = {"orderSettings": {"includeDraftOrderInVoucherUsage": True}}
+
+    update_channel(
+        e2e_staff_api_client,
+        channel_id,
+        channel_update_input,
+    )
+
     # Step 1 - Create draft order
     draft_order_input = {
         "channelId": channel_id,
@@ -110,6 +119,7 @@ def test_voucher_should_be_released_upon_draft_order_deletion_CORE_0922(
         draft_order_input,
     )
     order_id = data["order"]["id"]
+    print(data)
     assert order_id is not None
     order_line = data["order"]["lines"][0]
     shipping_method_id = data["order"]["shippingMethods"][0]["id"]
