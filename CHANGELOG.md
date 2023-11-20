@@ -15,7 +15,7 @@ All notable, unreleased changes to this project will be documented in this file.
 ### Saleor Apps
 
 ### Other changes
-- Added `VOUCHER_CODE_CREATED` and `VOUCHER_CODE_DELETED` webhooks events. - #14495 by @SzymJ
+- Added `VOUCHER_CODE_CREATED` and `VOUCHER_CODE_DELETED` webhooks events. - #14652 by @SzymJ
 
 
 # 3.18.0
