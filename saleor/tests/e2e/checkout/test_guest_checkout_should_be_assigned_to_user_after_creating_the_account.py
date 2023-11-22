@@ -18,29 +18,21 @@ def test_guest_checkout_should_be_assigned_to_user_after_creating_the_account_CO
     e2e_staff_api_client,
     app_api_client,
     e2e_not_logged_api_client,
-    permission_manage_products,
-    permission_manage_channels,
-    permission_manage_shipping,
     permission_manage_product_types_and_attributes,
     permission_manage_orders,
     permission_manage_checkouts,
     permission_manage_users,
-    permission_manage_settings,
     permission_manage_payments,
-    permission_manage_taxes,
+    shop_permissions,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
+        *shop_permissions,
         permission_manage_product_types_and_attributes,
         permission_manage_orders,
         permission_manage_checkouts,
         permission_manage_users,
-        permission_manage_settings,
         permission_manage_payments,
-        permission_manage_taxes,
     ]
     assign_permissions(
         app_api_client,
@@ -93,7 +85,6 @@ def test_guest_checkout_should_be_assigned_to_user_after_creating_the_account_CO
     checkout_id = checkout_data["id"]
 
     assert checkout_data["isShippingRequired"] is True
-    shipping_method_id = checkout_data["shippingMethods"][0]["id"]
     assert checkout_data["deliveryMethod"] is None
 
     # Step 2 - Set DeliveryMethod for checkout

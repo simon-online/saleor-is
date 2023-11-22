@@ -17,21 +17,13 @@ from ..utils import (
 def test_checkout_calculate_simple_tax_based_on_product_tax_class_CORE_2005(
     e2e_staff_api_client,
     e2e_not_logged_api_client,
-    permission_manage_products,
-    permission_manage_channels,
+    shop_permissions,
     permission_manage_product_types_and_attributes,
-    permission_manage_shipping,
-    permission_manage_taxes,
-    permission_manage_settings,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
+        *shop_permissions,
         permission_manage_product_types_and_attributes,
-        permission_manage_taxes,
-        permission_manage_settings,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
 
@@ -90,11 +82,11 @@ def test_checkout_calculate_simple_tax_based_on_product_tax_class_CORE_2005(
         (product_variant_price * product_tax_rate) / (100 + product_tax_rate),
         2,
     )
+    assert checkout_data["totalPrice"]["tax"]["amount"] == calculated_tax
 
     assert checkout_data["totalPrice"]["net"]["amount"] == round(
         product_variant_price - calculated_tax, 2
     )
-    shipping_method_id = checkout_data["shippingMethods"][0]["id"]
 
     # Step 2 - Set DeliveryMethod for checkout and check prices
     checkout_data = checkout_delivery_method_update(

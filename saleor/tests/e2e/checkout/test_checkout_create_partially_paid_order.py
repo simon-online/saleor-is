@@ -16,27 +16,19 @@ def test_should_be_able_to_create_partially_paid_order_core_0112(
     e2e_staff_api_client,
     e2e_not_logged_api_client,
     e2e_app_api_client,
-    permission_manage_products,
-    permission_manage_channels,
     permission_manage_product_types_and_attributes,
-    permission_manage_shipping,
+    shop_permissions,
     permission_manage_orders,
     permission_manage_checkouts,
     permission_manage_payments,
-    permission_manage_taxes,
-    permission_manage_settings,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
+        *shop_permissions,
         permission_manage_product_types_and_attributes,
         permission_manage_orders,
         permission_manage_checkouts,
         permission_manage_payments,
-        permission_manage_taxes,
-        permission_manage_settings,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
     shop_data = prepare_shop(
@@ -85,7 +77,6 @@ def test_should_be_able_to_create_partially_paid_order_core_0112(
     assert checkout_data["isShippingRequired"] is True
     assert checkout_data["deliveryMethod"] is None
     assert checkout_data["shippingMethod"] is None
-    shipping_method_id = checkout_data["shippingMethods"][0]["id"]
 
     # Step 2 - Set shipping address and DeliveryMethod for checkout
     checkout_data = checkout_delivery_method_update(

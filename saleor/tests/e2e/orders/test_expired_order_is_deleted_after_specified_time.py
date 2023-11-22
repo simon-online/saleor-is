@@ -16,34 +16,24 @@ from .utils import order_create_from_checkout, order_query
 def test_expired_order_is_deleted_after_specified_time_CORE_0216(
     e2e_staff_api_client,
     e2e_app_api_client,
-    permission_manage_products,
-    permission_manage_channels,
+    shop_permissions,
     permission_manage_product_types_and_attributes,
-    permission_manage_shipping,
     permission_manage_orders,
     permission_manage_payments,
     permission_handle_checkouts,
-    permission_manage_taxes,
-    permission_manage_settings,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
-        permission_manage_product_types_and_attributes,
+        *shop_permissions,
         permission_manage_orders,
-        permission_manage_taxes,
-        permission_manage_settings,
+        permission_manage_product_types_and_attributes,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
     app_permissions = [
         permission_manage_payments,
         permission_handle_checkouts,
         permission_manage_orders,
-        permission_manage_channels,
-        permission_manage_taxes,
-        permission_manage_settings,
+        *shop_permissions,
     ]
     assign_permissions(e2e_app_api_client, app_permissions)
 
@@ -92,7 +82,6 @@ def test_expired_order_is_deleted_after_specified_time_CORE_0216(
     assert checkout_id is not None
     assert checkout_data["isShippingRequired"] is True
     assert len(checkout_data["shippingMethods"]) == 1
-    shipping_method_id = checkout_data["shippingMethods"][0]["id"]
 
     # Step 2 - Assign shipping method
     checkout_data = checkout_delivery_method_update(

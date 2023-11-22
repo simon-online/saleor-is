@@ -55,23 +55,15 @@ def prepare_sale_for_product(
 def test_checkout_products_on_percentage_sale_core_1004(
     e2e_not_logged_api_client,
     e2e_staff_api_client,
-    permission_manage_products,
-    permission_manage_channels,
-    permission_manage_shipping,
+    shop_permissions,
     permission_manage_product_types_and_attributes,
     permission_manage_discounts,
-    permission_manage_taxes,
-    permission_manage_settings,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
+        *shop_permissions,
         permission_manage_product_types_and_attributes,
         permission_manage_discounts,
-        permission_manage_taxes,
-        permission_manage_settings,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
 
@@ -119,7 +111,6 @@ def test_checkout_products_on_percentage_sale_core_1004(
     )
     checkout_id = checkout_data["id"]
     checkout_lines = checkout_data["lines"][0]
-    shipping_method_id = checkout_data["shippingMethods"][0]["id"]
     line_discount = round(float(product_variant_price) * sale_discount_value / 100, 2)
     unit_price = float(product_variant_price) - line_discount
 

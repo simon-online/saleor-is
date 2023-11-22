@@ -1,7 +1,6 @@
 import pytest
 
 from ...product.utils.preparing_product import prepare_product
-from ...shipping_zone.utils import update_shipping_price
 from ...shop.utils import prepare_shop
 from ...taxes.utils import update_country_tax_rates
 from ...utils import assign_permissions
@@ -16,23 +15,15 @@ from ..utils import (
 @pytest.mark.e2e
 def test_order_calculate_simple_tax_based_on_shipping_address_tax_class_CORE_2002(
     e2e_staff_api_client,
-    permission_manage_products,
-    permission_manage_channels,
+    shop_permissions,
     permission_manage_product_types_and_attributes,
-    permission_manage_shipping,
-    permission_manage_taxes,
     permission_manage_orders,
-    permission_manage_settings,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
+        *shop_permissions,
         permission_manage_product_types_and_attributes,
-        permission_manage_taxes,
         permission_manage_orders,
-        permission_manage_settings,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
 
@@ -54,7 +45,6 @@ def test_order_calculate_simple_tax_based_on_shipping_address_tax_class_CORE_200
     shipping_method_id = shop_data["shipping_method_id"]
     shipping_country_tax_rate = shop_data["shipping_country_tax_rate"]
     shipping_country_code = shop_data["shipping_country_code"]
-    shipping_tax_class_id = shop_data["shipping_tax_class_id"]
     billing_country_code = shop_data["billing_country_code"]
     billing_country_tax_rate = shop_data["billing_country_tax_rate"]
     update_country_tax_rates(
@@ -63,11 +53,6 @@ def test_order_calculate_simple_tax_based_on_shipping_address_tax_class_CORE_200
         [{"rate": shipping_country_tax_rate}],
     )
 
-    update_shipping_price(
-        e2e_staff_api_client,
-        shipping_method_id,
-        {"taxClass": shipping_tax_class_id},
-    )
     update_country_tax_rates(
         e2e_staff_api_client,
         billing_country_code,

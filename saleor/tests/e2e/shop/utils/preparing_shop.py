@@ -1,3 +1,4 @@
+import base64
 import uuid
 
 from ...channel.utils import create_channel, update_channel
@@ -14,6 +15,13 @@ from ...taxes.utils import (
 )
 from ...warehouse.utils import create_warehouse, update_warehouse
 from ..utils.shop_update_settings import update_shop_settings
+
+
+def convert_base64_descriptor(encoded_string, new_descriptor):
+    decoded_string = base64.b64decode(encoded_string).decode("utf-8")
+    descriptor, object_id = decoded_string.split(":")
+    new_string = f"{new_descriptor}:{object_id}"
+    return base64.b64encode(new_string.encode("utf-8")).decode("utf-8")
 
 
 def create_and_update_tax_rates(e2e_staff_api_client, tax_rates):
@@ -104,11 +112,9 @@ def prepare_shop(e2e_staff_api_client, **kwargs):
     channel_slug = None
     shipping_zone_id = None
     shipping_method_id = None
-    country_tax_class_id = kwargs.get("country_tax_class_id", None)
     shipping_tax_class_id = kwargs.get("shipping_tax_class_id", None)
     product_tax_class_id = kwargs.get("product_tax_class_id", None)
     product_type_tax_class_id = kwargs.get("product_type_tax_class_id", None)
-    billing_tax_class_id = kwargs.get("billing_tax_class_id", None)
 
     for _ in range(num_warehouses):
         warehouse_data = create_warehouse(e2e_staff_api_client)
@@ -178,8 +184,13 @@ def prepare_shop(e2e_staff_api_client, **kwargs):
                         shipping_method_data = create_shipping_method(
                             e2e_staff_api_client, shipping_zone_id
                         )
-                        shipping_method_id = shipping_method_data["id"]
-
+                        shipping_method_type_id = shipping_method_data["id"]
+                        #  Please note: decoding won't be necessary once
+                        # https://github.com/saleor/saleor/issues/13675 is fixed
+                        new_descriptor = "ShippingMethod"
+                        shipping_method_id = convert_base64_descriptor(
+                            shipping_method_type_id, new_descriptor
+                        )
                         created_shipping_methods.append(shipping_method_data)
                         shipping_methods_for_zone.append(shipping_method_id)
                         created_shipping_methods_ids.append(shipping_method_id)
@@ -212,28 +223,12 @@ def prepare_shop(e2e_staff_api_client, **kwargs):
 
             tax_rates = [
                 {
-                    "type": "country",
-                    "name": "Country Tax Class",
-                    "country_code": country,
-                    "rate": country_tax_rate,
-                }
-                if country_tax_rate is not None
-                else None,
-                {
                     "type": "shipping",
                     "name": "Shipping Tax Class",
                     "country_code": shipping_country_code,
                     "rate": shipping_country_tax_rate,
                 }
                 if shipping_country_tax_rate is not None
-                else None,
-                {
-                    "type": "billing",
-                    "name": "Billing Tax Class",
-                    "country_code": billing_country_code,
-                    "rate": billing_country_tax_rate,
-                }
-                if billing_country_tax_rate is not None
                 else None,
                 {
                     "type": "product",
@@ -257,15 +252,9 @@ def prepare_shop(e2e_staff_api_client, **kwargs):
             created_tax_classes = create_and_update_tax_rates(
                 e2e_staff_api_client, tax_rates
             )
-            if "country" in created_tax_classes:
-                country_tax_class_id = created_tax_classes["country"]["id"]
 
             if "shipping" in created_tax_classes:
                 shipping_tax_class_id = created_tax_classes["shipping"]["id"]
-
-            if "billing" in created_tax_classes:
-                billing_tax_class_id = created_tax_classes["billing"]["id"]
-
             if "product" in created_tax_classes:
                 product_tax_class_id = created_tax_classes["product"]["id"]
             if "product_type" in created_tax_classes:
@@ -301,8 +290,6 @@ def prepare_shop(e2e_staff_api_client, **kwargs):
         "shipping_country_code": shipping_country_code,
         "billing_country_code": billing_country_code,
         "created_shipping_zones": created_shipping_zones,
-        "billing_tax_class_id": billing_tax_class_id,
-        "country_tax_class_id": country_tax_class_id,
         "expire_order_after_in_minutes": expire_order_after_in_minutes,
         "delete_expired_order_after_in_days": delete_expired_order_after_in_days,
     }

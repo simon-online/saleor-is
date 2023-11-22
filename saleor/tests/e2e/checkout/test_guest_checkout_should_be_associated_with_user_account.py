@@ -31,27 +31,19 @@ def create_active_customer(
 def test_guest_checkout_should_be_associated_with_user_account_CORE_1517(
     e2e_staff_api_client,
     e2e_not_logged_api_client,
-    permission_manage_products,
-    permission_manage_channels,
-    permission_manage_shipping,
     permission_manage_product_types_and_attributes,
     permission_manage_orders,
     permission_manage_checkouts,
     permission_manage_users,
-    permission_manage_settings,
-    permission_manage_taxes,
+    shop_permissions,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
         permission_manage_product_types_and_attributes,
         permission_manage_orders,
         permission_manage_checkouts,
         permission_manage_users,
-        permission_manage_settings,
-        permission_manage_taxes,
+        *shop_permissions,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
 
@@ -96,7 +88,6 @@ def test_guest_checkout_should_be_associated_with_user_account_CORE_1517(
     checkout_id = checkout_data["id"]
 
     assert checkout_data["isShippingRequired"] is True
-    shipping_method_id = checkout_data["shippingMethods"][0]["id"]
     assert checkout_data["deliveryMethod"] is None
 
     # Step 2 - Set DeliveryMethod for checkout

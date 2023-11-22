@@ -17,21 +17,13 @@ from ..utils import (
 def test_checkout_calculate_simple_tax_based_on_shipping_tax_class_CORE_2009(
     e2e_staff_api_client,
     e2e_not_logged_api_client,
-    permission_manage_products,
-    permission_manage_channels,
+    shop_permissions,
     permission_manage_product_types_and_attributes,
-    permission_manage_shipping,
-    permission_manage_taxes,
-    permission_manage_settings,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
+        *shop_permissions,
         permission_manage_product_types_and_attributes,
-        permission_manage_taxes,
-        permission_manage_settings,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
 
@@ -48,6 +40,8 @@ def test_checkout_calculate_simple_tax_based_on_shipping_tax_class_CORE_2009(
     shipping_country_tax_rate = shop_data["shipping_country_tax_rate"]
     shipping_country_code = shop_data["shipping_country_code"]
     shipping_tax_class_id = shop_data["shipping_tax_class_id"]
+    shipping_method_id = shop_data["shipping_method_id"]
+
     update_country_tax_rates(
         e2e_staff_api_client,
         shipping_country_code,
@@ -89,7 +83,6 @@ def test_checkout_calculate_simple_tax_based_on_shipping_tax_class_CORE_2009(
     )
     product_variant_price = float(product_variant_price)
     checkout_id = checkout_data["id"]
-    shipping_method_id = checkout_data["shippingMethods"][0]["id"]
 
     subtotal_net = round((product_variant_price * 2), 2)
     subtotal_tax = round(subtotal_net * (shipping_country_tax_rate / 100), 2)

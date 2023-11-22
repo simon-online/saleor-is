@@ -121,13 +121,9 @@ def prepare_voucher(
 def test_checkout_with_promotion_and_voucher_CORE_2107(
     e2e_not_logged_api_client,
     e2e_staff_api_client,
-    permission_manage_products,
-    permission_manage_channels,
-    permission_manage_shipping,
+    shop_permissions,
     permission_manage_product_types_and_attributes,
     permission_manage_discounts,
-    permission_manage_taxes,
-    permission_manage_settings,
     variant_price,
     promotion_type,
     promotion_value,
@@ -139,13 +135,9 @@ def test_checkout_with_promotion_and_voucher_CORE_2107(
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
+        *shop_permissions,
         permission_manage_product_types_and_attributes,
         permission_manage_discounts,
-        permission_manage_taxes,
-        permission_manage_settings,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
     shop_data = prepare_shop(
@@ -154,6 +146,7 @@ def test_checkout_with_promotion_and_voucher_CORE_2107(
     channel_id = shop_data["channel_id"]
     channel_slug = shop_data["channel_slug"]
     warehouse_id = shop_data["warehouse_id"]
+    shipping_method_id = shop_data["shipping_method_id"]
 
     (
         product_id,
@@ -196,7 +189,6 @@ def test_checkout_with_promotion_and_voucher_CORE_2107(
     )
     checkout_id = checkout_data["id"]
     checkout_lines = checkout_data["lines"][0]
-    shipping_method_id = checkout_data["shippingMethods"][0]["id"]
 
     assert checkout_data["isShippingRequired"] is True
     unit_price_with_promotion = round(

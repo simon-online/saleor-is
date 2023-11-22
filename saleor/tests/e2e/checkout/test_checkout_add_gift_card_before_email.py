@@ -18,23 +18,17 @@ from .utils import (
 def test_add_gift_card_before_email_in_checkout_core_1104(
     e2e_not_logged_api_client,
     e2e_staff_api_client,
-    permission_manage_products,
-    permission_manage_channels,
-    permission_manage_shipping,
+    shop_permissions,
     permission_manage_product_types_and_attributes,
     permission_manage_gift_card,
     permission_manage_taxes,
-    permission_manage_settings,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
+        *shop_permissions,
         permission_manage_product_types_and_attributes,
         permission_manage_gift_card,
         permission_manage_taxes,
-        permission_manage_settings,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
 
@@ -44,6 +38,7 @@ def test_add_gift_card_before_email_in_checkout_core_1104(
     warehouse_id = shop_data["warehouse_id"]
     channel_id = shop_data["channel_id"]
     channel_slug = shop_data["channel_slug"]
+    shipping_method_id = shop_data["shipping_method_id"]
     (
         _product_id,
         product_variant_id,
@@ -75,7 +70,6 @@ def test_add_gift_card_before_email_in_checkout_core_1104(
         set_default_shipping_address=True,
     )
     checkout_id = checkout_data["id"]
-    shipping_method_id = checkout_data["shippingMethods"][0]["id"]
     calculated_subtotal = product_variant_price * 3
     assert checkout_data["isShippingRequired"] is True
     assert checkout_data["totalPrice"]["gross"]["amount"] == calculated_subtotal

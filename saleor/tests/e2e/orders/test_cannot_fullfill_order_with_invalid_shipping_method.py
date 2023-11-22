@@ -1,5 +1,3 @@
-import base64
-
 import pytest
 
 from .. import DEFAULT_ADDRESS
@@ -12,37 +10,19 @@ from .utils.draft_order_update import draft_order_update
 from .utils.order_lines_create import order_lines_create
 from .utils.order_query import order_query
 
-#  Please note: decoding won't be necessary once
-# https://github.com/saleor/saleor/issues/13675 is fixed
-
-
-def decode_base64_and_get_last_2_chars(encoded_string):
-    base64_bytes = encoded_string.encode("ascii")
-    decoded_bytes = base64.b64decode(base64_bytes)
-    decoded_string = decoded_bytes.decode("ascii")
-    return decoded_string[-2:]
-
 
 @pytest.mark.e2e
 def test_cannot_fullfill_order_with_invalid_shipping_method_core_0203(
     e2e_staff_api_client,
-    permission_manage_products,
-    permission_manage_channels,
+    shop_permissions,
     permission_manage_product_types_and_attributes,
-    permission_manage_shipping,
     permission_manage_orders,
-    permission_manage_taxes,
-    permission_manage_settings,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
-        permission_manage_shipping,
+        *shop_permissions,
         permission_manage_product_types_and_attributes,
         permission_manage_orders,
-        permission_manage_taxes,
-        permission_manage_settings,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
 
@@ -102,12 +82,7 @@ def test_cannot_fullfill_order_with_invalid_shipping_method_core_0203(
         input_data,
     )
     order_shipping_id = draft_order["order"]["deliveryMethod"]["id"]
-    first_shipping_id_number = decode_base64_and_get_last_2_chars(
-        first_shipping_method_id
-    )
-    shipping_id_number = decode_base64_and_get_last_2_chars(order_shipping_id)
-
-    assert shipping_id_number == first_shipping_id_number
+    assert order_shipping_id == first_shipping_method_id
 
     # Step 3 - Update order's shipping address for country PL
     polish_address = {
@@ -146,10 +121,4 @@ def test_cannot_fullfill_order_with_invalid_shipping_method_core_0203(
         order_id,
     )
     order_shipping_method = order_details["availableShippingMethods"][0]["id"]
-    second_shipping_id_number = decode_base64_and_get_last_2_chars(
-        second_shipping_method_id
-    )
-    order_shipping_method_number = decode_base64_and_get_last_2_chars(
-        order_shipping_method
-    )
-    assert order_shipping_method_number == second_shipping_id_number
+    assert order_shipping_method == second_shipping_method_id

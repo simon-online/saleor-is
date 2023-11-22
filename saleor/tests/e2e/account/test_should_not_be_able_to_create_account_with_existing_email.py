@@ -9,21 +9,13 @@ from .utils import account_register, raw_account_register
 def test_should_not_be_able_to_create_account_with_existing_email_core_1503(
     e2e_not_logged_api_client,
     e2e_staff_api_client,
-    permission_manage_products,
-    permission_manage_channels,
     permission_manage_product_types_and_attributes,
-    permission_manage_shipping,
-    permission_manage_taxes,
-    permission_manage_settings,
+    shop_permissions,
 ):
     # Before
     permissions = [
-        permission_manage_products,
-        permission_manage_channels,
         permission_manage_product_types_and_attributes,
-        permission_manage_shipping,
-        permission_manage_taxes,
-        permission_manage_settings,
+        *shop_permissions,
     ]
     assign_permissions(e2e_staff_api_client, permissions)
 
