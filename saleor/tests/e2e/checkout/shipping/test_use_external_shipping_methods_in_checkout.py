@@ -1,4 +1,5 @@
 import pytest
+import vcr
 
 from ...apps.utils import add_app
 from ...product.utils.preparing_product import prepare_product
@@ -11,6 +12,11 @@ from ..utils import (
     checkout_delivery_method_update,
     checkout_dummy_payment_create,
 )
+
+
+def request_matcher(r1, r2):
+    assert r1.uri == r2.uri
+    assert r1.body == r2.body
 
 
 @pytest.mark.vcr
@@ -82,14 +88,20 @@ def test_use_external_shipping_methods_in_checkout_core_1652(
             "quantity": 4,
         },
     ]
-    checkout_data = checkout_create(
-        e2e_not_logged_api_client,
-        lines,
-        channel_slug,
-        email="testEmail@example.com",
-        set_default_billing_address=True,
-        set_default_shipping_address=True,
-    )
+    my_vcr = vcr.VCR()
+    my_vcr.register_matcher("shipping", request_matcher)
+    with my_vcr.use_cassette(
+        "saleor/tests/e2e/checkout/shipping/cassettes/test_use_external_shipping_methods_in_checkout/test_use_external_shipping_methods_in_checkout_core_1652.yaml",
+        match_on=["shipping"],
+    ):
+        checkout_data = checkout_create(
+            e2e_not_logged_api_client,
+            lines,
+            channel_slug,
+            email="testEmail@example.com",
+            set_default_billing_address=True,
+            set_default_shipping_address=True,
+        )
     checkout_id = checkout_data["id"]
     assert checkout_data["isShippingRequired"] is True
     calculated_subtotal = product_variant_price * 4
