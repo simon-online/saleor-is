@@ -152,6 +152,7 @@ def test_exclude_products_for_shipping_method_trigger_webhook(
         ),
         WebhookEventAsyncType.SHIPPING_PRICE_UPDATED,
         [any_webhook],
+        False,
         shipping_method,
         issuer,
     )

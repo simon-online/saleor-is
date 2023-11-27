@@ -193,6 +193,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 instance,
                 self.requestor,
                 legacy_data_generator=metadata_payload_generator,
@@ -222,6 +223,7 @@ class WebhookPlugin(BasePlugin):
                 self._serialize_payload(raw_payload),
                 event_type,
                 webhooks,
+                self.allow_replica,
                 data,
                 self.requestor,
             )
@@ -236,6 +238,7 @@ class WebhookPlugin(BasePlugin):
                 self._serialize_payload(raw_payload),
                 event_type,
                 webhooks,
+                self.allow_replica,
                 data,
                 self.requestor,
             )
@@ -357,7 +360,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, address, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                address,
+                self.requestor,
             )
 
     def address_created(self, address: "Address", previous_value: None) -> None:
@@ -385,7 +393,9 @@ class WebhookPlugin(BasePlugin):
                     "meta": self._generate_meta(),
                 }
             )
-            trigger_webhooks_async(payload, event_type, webhooks, app, self.requestor)
+            trigger_webhooks_async(
+                payload, event_type, webhooks, self.allow_replica, app, self.requestor
+            )
 
     def app_installed(self, app: "App", previous_value: None) -> None:
         if not self.active:
@@ -418,7 +428,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, attribute, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                attribute,
+                self.requestor,
             )
 
     def attribute_created(self, attribute: "Attribute", previous_value: None) -> None:
@@ -462,7 +477,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, attribute_value, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                attribute_value,
+                self.requestor,
             )
 
     def attribute_value_created(
@@ -505,7 +525,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, category, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                category,
+                self.requestor,
             )
 
     def category_created(self, category: "Category", previous_value: None) -> None:
@@ -537,7 +562,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, channel, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                channel,
+                self.requestor,
             )
 
     def channel_created(self, channel: "Channel", previous_value: None) -> None:
@@ -587,7 +617,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, gift_card, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                gift_card,
+                self.requestor,
             )
 
     def gift_card_created(
@@ -640,6 +675,7 @@ class WebhookPlugin(BasePlugin):
                 payload,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 {
                     "gift_card": gift_card,
                     "channel_slug": channel_slug,
@@ -680,6 +716,7 @@ class WebhookPlugin(BasePlugin):
                 payload,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 export,
                 self.requestor,
             )
@@ -706,6 +743,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -720,7 +758,9 @@ class WebhookPlugin(BasePlugin):
                     "meta": self._generate_meta(),
                 }
             )
-            trigger_webhooks_async(payload, event_type, webhooks, menu, self.requestor)
+            trigger_webhooks_async(
+                payload, event_type, webhooks, self.allow_replica, menu, self.requestor
+            )
 
     def menu_created(self, menu: "Menu", previous_value: None) -> None:
         if not self.active:
@@ -752,7 +792,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, menu_item, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                menu_item,
+                self.requestor,
             )
 
     def menu_item_created(self, menu_item: "MenuItem", previous_value: None) -> None:
@@ -790,6 +835,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -807,6 +853,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -824,6 +871,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -841,6 +889,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -858,6 +907,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -875,6 +925,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -892,6 +943,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -918,6 +970,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 sale,
                 self.requestor,
                 legacy_data_generator=sale_data_generator,
@@ -945,6 +998,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 sale,
                 self.requestor,
                 legacy_data_generator=sale_data_generator,
@@ -971,6 +1025,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 sale,
                 self.requestor,
                 legacy_data_generator=sale_data_generator,
@@ -996,6 +1051,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 sale,
                 self.requestor,
                 legacy_data_generator=sale_data_generator,
@@ -1077,7 +1133,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, promotion_rule, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                promotion_rule,
+                self.requestor,
             )
 
     def promotion_rule_created(
@@ -1131,6 +1192,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 invoice,
                 self.requestor,
                 legacy_data_generator=invoice_data_generator,
@@ -1148,6 +1210,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 invoice,
                 self.requestor,
                 legacy_data_generator=invoice_data_generator,
@@ -1165,6 +1228,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 invoice,
                 self.requestor,
                 legacy_data_generator=invoice_data_generator,
@@ -1184,6 +1248,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -1201,6 +1266,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -1228,6 +1294,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 orders,
                 self.requestor,
                 legacy_data_generator=generate_bulk_order_payload,
@@ -1245,6 +1312,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -1262,6 +1330,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -1279,6 +1348,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 order,
                 self.requestor,
                 legacy_data_generator=order_data_generator,
@@ -1301,6 +1371,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 {
                     "notify_customer": notify_customer,
                     "fulfillment": fulfillment,
@@ -1321,6 +1392,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 fulfillment,
                 self.requestor,
                 legacy_data_generator=fulfillment_data_generator,
@@ -1343,6 +1415,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 {
                     "fulfillment": fulfillment,
                     "notify_customer": notify_customer,
@@ -1365,7 +1438,12 @@ class WebhookPlugin(BasePlugin):
         if webhooks := get_webhooks_for_event(event_type):
             fulfillment_data = generate_fulfillment_payload(fulfillment, self.requestor)
             trigger_webhooks_async(
-                fulfillment_data, event_type, webhooks, fulfillment, self.requestor
+                fulfillment_data,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                fulfillment,
+                self.requestor,
             )
 
     def customer_created(self, customer: "User", previous_value: Any) -> Any:
@@ -1380,6 +1458,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 customer,
                 self.requestor,
                 legacy_data_generator=customer_data_generator,
@@ -1399,6 +1478,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 customer,
                 self.requestor,
                 legacy_data_generator=customer_data_generator,
@@ -1418,6 +1498,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 customer,
                 self.requestor,
                 legacy_data_generator=customer_data_generator,
@@ -1444,6 +1525,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 collection,
                 self.requestor,
                 legacy_data_generator=collection_data_generator,
@@ -1461,6 +1543,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 collection,
                 self.requestor,
                 legacy_data_generator=collection_data_generator,
@@ -1480,6 +1563,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 collection,
                 self.requestor,
                 legacy_data_generator=collection_data_generator,
@@ -1508,6 +1592,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 product,
                 self.requestor,
                 legacy_data_generator=product_data_generator,
@@ -1527,6 +1612,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 product,
                 self.requestor,
                 legacy_data_generator=product_data_generator,
@@ -1568,6 +1654,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 product,
                 self.requestor,
                 legacy_data_generator=product_data_generator,
@@ -1583,6 +1670,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 media,
                 self.requestor,
                 legacy_data_generator=media_data_generator,
@@ -1598,6 +1686,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 media,
                 self.requestor,
                 legacy_data_generator=media_data_generator,
@@ -1613,6 +1702,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 media,
                 self.requestor,
                 legacy_data_generator=media_data_generator,
@@ -1632,6 +1722,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 product_variant,
                 self.requestor,
                 legacy_data_generator=product_variant_data_generator,
@@ -1651,6 +1742,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 product_variant,
                 self.requestor,
                 legacy_data_generator=product_variant_data_generator,
@@ -1670,6 +1762,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 product_variant,
                 self.requestor,
                 legacy_data_generator=product_variant_data_generator,
@@ -1698,6 +1791,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 stock,
                 self.requestor,
                 legacy_data_generator=product_variant_data_generator,
@@ -1717,6 +1811,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 stock,
                 self.requestor,
                 legacy_data_generator=product_variant_data_generator,
@@ -1736,6 +1831,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 stock,
                 self.requestor,
                 legacy_data_generator=product_variant_data_generator,
@@ -1753,6 +1849,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 checkout,
                 self.requestor,
                 legacy_data_generator=checkout_data_generator,
@@ -1770,6 +1867,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 checkout,
                 self.requestor,
                 legacy_data_generator=checkout_data_generator,
@@ -1787,6 +1885,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 checkout,
                 self.requestor,
                 legacy_data_generator=checkout_data_generator,
@@ -1819,7 +1918,7 @@ class WebhookPlugin(BasePlugin):
             )
             if event not in NotifyEventType.CHOICES:
                 logger.info(f"Webhook {event_type} triggered for {event} notify event.")
-            trigger_webhooks_async(data, event_type, webhooks)
+            trigger_webhooks_async(data, event_type, webhooks, self.allow_replica)
 
     def page_created(self, page: "Page", previous_value: Any) -> Any:
         if not self.active:
@@ -1831,6 +1930,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 page,
                 self.requestor,
                 legacy_data_generator=page_data_generator,
@@ -1846,6 +1946,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 page,
                 self.requestor,
                 legacy_data_generator=page_data_generator,
@@ -1861,6 +1962,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 page,
                 self.requestor,
                 legacy_data_generator=page_data_generator,
@@ -1943,7 +2045,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, shipping_method, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                shipping_method,
+                self.requestor,
             )
 
     def shipping_price_created(
@@ -1985,7 +2092,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, shipping_zone, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                shipping_zone,
+                self.requestor,
             )
 
     def shipping_zone_created(
@@ -2036,7 +2148,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, staff_user, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                staff_user,
+                self.requestor,
             )
 
     def staff_created(self, staff_user: "User", previous_value: None) -> None:
@@ -2087,9 +2204,10 @@ class WebhookPlugin(BasePlugin):
         if webhooks := get_webhooks_for_event(event_type):
             thumbnail_data_generator = partial(generate_thumbnail_payload, thumbnail)
             trigger_webhooks_async(
-                data=None,
-                event_type=event_type,
-                webhooks=webhooks,
+                None,
+                event_type,
+                webhooks,
+                self.allow_replica,
                 subscribable_object=thumbnail,
                 legacy_data_generator=thumbnail_data_generator,
             )
@@ -2106,6 +2224,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 translation,
                 self.requestor,
                 legacy_data_generator=translation_data_generator,
@@ -2123,6 +2242,7 @@ class WebhookPlugin(BasePlugin):
                 None,
                 event_type,
                 webhooks,
+                self.allow_replica,
                 translation,
                 self.requestor,
                 legacy_data_generator=translation_data_generator,
@@ -2137,7 +2257,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, warehouse, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                warehouse,
+                self.requestor,
             )
 
     def warehouse_created(self, warehouse: "Warehouse", previous_value: None) -> None:
@@ -2181,7 +2306,12 @@ class WebhookPlugin(BasePlugin):
                 }
             )
             trigger_webhooks_async(
-                payload, event_type, webhooks, voucher, self.requestor
+                payload,
+                event_type,
+                webhooks,
+                self.allow_replica,
+                voucher,
+                self.requestor,
             )
 
     def voucher_created(
@@ -2277,6 +2407,7 @@ class WebhookPlugin(BasePlugin):
             event_type,
             payload,
             webhook,
+            False,
             subscribable_object=StoredPaymentMethodRequestDeleteData(
                 payment_method_id=app_data.name,
                 user=request_delete_data.user,
@@ -2315,7 +2446,8 @@ class WebhookPlugin(BasePlugin):
                     event_type,
                     payload,
                     webhook,
-                    cache_data=payload_dict,
+                    payload_dict,
+                    self.allow_replica,
                     subscribable_object=list_payment_method_data,
                     request_timeout=WEBHOOK_SYNC_TIMEOUT,
                     cache_timeout=WEBHOOK_CACHE_DEFAULT_TIMEOUT,
@@ -2350,6 +2482,7 @@ class WebhookPlugin(BasePlugin):
             event_type,
             payload,
             webhook,
+            False,
             subscribable_object=request_data,
             timeout=WEBHOOK_SYNC_TIMEOUT,
         )
@@ -2572,7 +2705,11 @@ class WebhookPlugin(BasePlugin):
             if not webhook:
                 raise PaymentError(f"No payment webhook found for event: {event_type}.")
             response_data = trigger_webhook_sync(
-                event_type, webhook_payload, webhook, subscribable_object=payment
+                event_type,
+                webhook_payload,
+                webhook,
+                False,
+                subscribable_object=payment,
             )
             if response_data is None:
                 continue
@@ -2622,6 +2759,7 @@ class WebhookPlugin(BasePlugin):
             event_type=WebhookEventSyncType.PAYMENT_GATEWAY_INITIALIZE_SESSION,
             payload=json.dumps(payload, cls=CustomJsonEncoder),
             webhook=webhook,
+            allow_replica=False,
             subscribable_object=subscribable_object,
             request=request,
         )
@@ -2709,6 +2847,7 @@ class WebhookPlugin(BasePlugin):
             event_type=webhook_event,
             payload=payload,
             webhook=webhook,
+            allow_replica=False,
             subscribable_object=transaction_session_data,
         )
         error_msg = None
@@ -2764,6 +2903,7 @@ class WebhookPlugin(BasePlugin):
                 event_type=event_type,
                 payload=generate_list_gateways_payload(currency, checkout),
                 webhook=webhook,
+                allow_replica=False,
                 subscribable_object=checkout,
             )
             if response_data:
@@ -2914,6 +3054,7 @@ class WebhookPlugin(BasePlugin):
                     payload=payload,
                     webhook=webhook,
                     cache_data=cache_data,
+                    allow_replica=self.allow_replica,
                     subscribable_object=checkout,
                     request_timeout=WEBHOOK_SYNC_TIMEOUT,
                     cache_timeout=CACHE_TIME_SHIPPING_LIST_METHODS_FOR_CHECKOUT,

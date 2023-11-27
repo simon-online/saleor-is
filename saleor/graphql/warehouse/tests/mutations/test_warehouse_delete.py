@@ -81,6 +81,7 @@ def test_delete_warehouse_mutation_trigger_webhook(
         ),
         WebhookEventAsyncType.WAREHOUSE_DELETED,
         [any_webhook],
+        False,
         warehouse,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

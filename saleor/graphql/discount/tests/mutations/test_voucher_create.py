@@ -251,6 +251,7 @@ def test_create_voucher_trigger_webhook(
         ),
         WebhookEventAsyncType.VOUCHER_CREATED,
         [any_webhook],
+        False,
         voucher,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

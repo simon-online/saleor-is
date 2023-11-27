@@ -133,6 +133,7 @@ def test_voucher_add_catalogues_trigger_webhook(
         ),
         WebhookEventAsyncType.VOUCHER_UPDATED,
         [any_webhook],
+        False,
         voucher,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

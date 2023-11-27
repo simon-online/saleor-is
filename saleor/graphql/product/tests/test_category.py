@@ -526,6 +526,7 @@ def test_category_create_trigger_webhook(
         ),
         WebhookEventAsyncType.CATEGORY_CREATED,
         [any_webhook],
+        False,
         category,
         SimpleLazyObject(lambda: staff_api_client.user),
     )
@@ -790,6 +791,7 @@ def test_category_update_trigger_webhook(
         ),
         WebhookEventAsyncType.CATEGORY_UPDATED,
         [any_webhook],
+        False,
         category,
         SimpleLazyObject(lambda: staff_api_client.user),
     )
@@ -1248,6 +1250,7 @@ def test_category_delete_trigger_webhook(
         ),
         WebhookEventAsyncType.CATEGORY_DELETED,
         [any_webhook],
+        False,
         category,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

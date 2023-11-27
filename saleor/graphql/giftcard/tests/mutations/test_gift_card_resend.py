@@ -294,6 +294,7 @@ def test_resend_gift_card_triggers_gift_card_sent_event(
         ),
         WebhookEventAsyncType.GIFT_CARD_SENT,
         [any_webhook],
+        False,
         {
             "gift_card": gift_card,
             "channel_slug": channel_USD.slug,

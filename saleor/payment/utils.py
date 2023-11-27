@@ -249,7 +249,7 @@ def create_payment_information(
         refund_data=refund_data,
         transactions=generate_transactions_data(payment),
         _resolve_lines_data=lambda: create_payment_lines_information(
-            payment, manager or get_plugins_manager()
+            payment, manager or get_plugins_manager(allow_replica=False)
         ),
     )
 
@@ -1272,7 +1272,7 @@ def create_transaction_event_from_request_and_webhook_response(
         # circular import
         from ..order.actions import order_transaction_updated
 
-        manager = get_plugins_manager()
+        manager = get_plugins_manager(allow_replica=False)
         order = cast(Order, transaction_item.order)
         order_info = fetch_order_info(order)
         update_order_with_transaction_details(transaction_item)
@@ -1287,7 +1287,7 @@ def create_transaction_event_from_request_and_webhook_response(
             previous_refunded_value=previous_refunded_value,
         )
     elif transaction_item.checkout_id:
-        manager = get_plugins_manager()
+        manager = get_plugins_manager(allow_replica=False)
         transaction_amounts_for_checkout_updated(transaction_item, manager)
     return event
 

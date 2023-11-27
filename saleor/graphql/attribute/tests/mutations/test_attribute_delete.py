@@ -99,6 +99,7 @@ def test_delete_attribute_trigger_webhook(
         ),
         WebhookEventAsyncType.ATTRIBUTE_DELETED,
         [any_webhook],
+        False,
         color_attribute,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

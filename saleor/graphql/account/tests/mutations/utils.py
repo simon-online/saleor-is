@@ -7,7 +7,9 @@ from .....core.utils.json_serializer import CustomJsonEncoder
 from .....webhook.payloads import generate_meta, generate_requestor
 
 
-def generate_address_webhook_call_args(address, event, requestor, webhook):
+def generate_address_webhook_call_args(
+    address, event, requestor, webhook, allow_replica=False
+):
     return [
         json.dumps(
             {
@@ -25,6 +27,7 @@ def generate_address_webhook_call_args(address, event, requestor, webhook):
         ),
         event,
         [webhook],
+        allow_replica,
         address,
         SimpleLazyObject(lambda: requestor),
     ]

@@ -42,7 +42,7 @@ task_logger = get_task_logger(__name__)
 
 
 def create_deliveries_for_subscriptions(
-    event_type, subscribable_object, webhooks, requestor=None
+    event_type, subscribable_object, webhooks, requestor=None, allow_replica=False
 ) -> list[EventDelivery]:
     """Create a list of event deliveries with payloads based on subscription query.
 
@@ -54,6 +54,7 @@ def create_deliveries_for_subscriptions(
     :param webhooks: sequence of async webhooks.
     :param requestor: used in subscription webhooks to generate meta data for payload.
     :return: List of event deliveries to send via webhook tasks.
+    :param allow_replica: use replica database.
     """
     if event_type not in WEBHOOK_TYPES_MAP:
         logger.info(
@@ -72,6 +73,7 @@ def create_deliveries_for_subscriptions(
                 requestor,
                 event_type in WebhookEventSyncType.ALL,
                 event_type=event_type,
+                allow_replica=allow_replica,
             ),
             app=webhook.app,
         )
@@ -125,6 +127,7 @@ def trigger_webhooks_async(
     data,  # deprecated, legacy_data_generator should be used instead
     event_type,
     webhooks,
+    allow_replica,
     subscribable_object=None,
     requestor=None,
     legacy_data_generator=None,
@@ -136,6 +139,7 @@ def trigger_webhooks_async(
         `legacy_data_generator` function is used to generate the payload when needed.
     :param event_type: used in both webhook types as event type.
     :param webhooks: used in both webhook types, queryset of async webhooks.
+    :param allow_replica: use a replica database.
     :param subscribable_object: subscribable object used in subscription webhooks.
     :param requestor: used in subscription webhooks to generate meta data for payload.
     :param legacy_data_generator: used to generate payload for regular webhooks.
@@ -163,6 +167,7 @@ def trigger_webhooks_async(
                 subscribable_object=subscribable_object,
                 webhooks=subscription_webhooks,
                 requestor=requestor,
+                allow_replica=allow_replica,
             )
         )
 

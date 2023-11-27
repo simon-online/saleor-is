@@ -96,6 +96,7 @@ def test_delete_shipping_zone_trigger_webhook(
         ),
         WebhookEventAsyncType.SHIPPING_ZONE_DELETED,
         [any_webhook],
+        False,
         shipping_zone,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

@@ -258,6 +258,7 @@ def test_install_app_created_app_trigger_webhook(
         ),
         WebhookEventAsyncType.APP_INSTALLED,
         [any_webhook],
+        True,
         app,
         None,
     )

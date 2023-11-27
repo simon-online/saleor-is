@@ -533,6 +533,7 @@ def test_channel_create_mutation_trigger_webhook(
         ),
         WebhookEventAsyncType.CHANNEL_CREATED,
         [any_webhook],
+        False,
         channel,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

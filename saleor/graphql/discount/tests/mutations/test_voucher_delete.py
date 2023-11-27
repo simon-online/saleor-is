@@ -85,6 +85,7 @@ def test_voucher_delete_mutation_trigger_webhook(
         ),
         WebhookEventAsyncType.VOUCHER_DELETED,
         [any_webhook],
+        False,
         voucher,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

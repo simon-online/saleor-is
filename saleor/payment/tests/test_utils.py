@@ -34,7 +34,7 @@ from ..utils import (
 
 def test_create_payment_lines_information_order(payment_dummy):
     # given
-    manager = get_plugins_manager()
+    manager = get_plugins_manager(allow_replica=False)
 
     # when
     payment_lines_data = create_payment_lines_information(payment_dummy, manager)
@@ -60,7 +60,7 @@ def test_create_payment_lines_information_order_with_voucher(payment_dummy):
     voucher_amount = Decimal("12.30")
     order = payment_dummy.order
     order.undiscounted_total_gross_amount += voucher_amount
-    manager = get_plugins_manager()
+    manager = get_plugins_manager(allow_replica=False)
 
     # when
     payment_lines_data = create_payment_lines_information(payment_dummy, manager)
@@ -119,7 +119,7 @@ def get_expected_checkout_payment_lines(manager, checkout_info, lines, address):
 
 def test_create_payment_lines_information_checkout(payment_dummy, checkout_with_items):
     # given
-    manager = get_plugins_manager()
+    manager = get_plugins_manager(allow_replica=False)
     payment_dummy.order = None
     payment_dummy.checkout = checkout_with_items
 
@@ -141,7 +141,7 @@ def test_create_payment_lines_information_checkout_with_voucher(
     payment_dummy, checkout_with_items
 ):
     # given
-    manager = get_plugins_manager()
+    manager = get_plugins_manager(allow_replica=False)
     voucher_amount = Decimal("12.30")
     payment_dummy.order = None
     checkout_with_items.discount_amount = voucher_amount
@@ -165,7 +165,7 @@ def test_create_payment_lines_information_checkout_with_voucher(
 
 def test_create_payment_lines_information_invalid_payment(payment_dummy):
     # given
-    manager = get_plugins_manager()
+    manager = get_plugins_manager(allow_replica=False)
     payment_dummy.order = None
 
     # when

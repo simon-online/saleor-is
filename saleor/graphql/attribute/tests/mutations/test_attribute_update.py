@@ -143,6 +143,7 @@ def test_update_attribute_trigger_webhook(
         ),
         WebhookEventAsyncType.ATTRIBUTE_UPDATED,
         [any_webhook],
+        False,
         color_attribute,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

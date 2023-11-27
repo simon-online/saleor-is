@@ -89,6 +89,7 @@ def test_promotion_create_translation(
         None,
         WebhookEventAsyncType.TRANSLATION_CREATED,
         [any_webhook],
+        False,
         translation,
         SimpleLazyObject(lambda: staff_api_client.user),
         legacy_data_generator=ANY,

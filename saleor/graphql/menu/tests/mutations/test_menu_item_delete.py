@@ -83,6 +83,7 @@ def test_delete_menu_item_trigger_webhook(
         ),
         WebhookEventAsyncType.MENU_ITEM_DELETED,
         [any_webhook],
+        False,
         menu_item,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

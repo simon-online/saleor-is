@@ -116,6 +116,7 @@ def get_excluded_shipping_methods_or_fetch(
             event_type,
             payload,
             webhook,
+            False,
             subscribable_object=subscribable_object,
             timeout=settings.WEBHOOK_SYNC_TIMEOUT,
         )

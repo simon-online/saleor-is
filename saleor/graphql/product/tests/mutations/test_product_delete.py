@@ -138,6 +138,7 @@ def test_delete_product_trigger_webhook(
         None,
         WebhookEventAsyncType.PRODUCT_DELETED,
         [any_webhook],
+        False,
         product,
         SimpleLazyObject(lambda: staff_api_client.user),
         legacy_data_generator=ANY,

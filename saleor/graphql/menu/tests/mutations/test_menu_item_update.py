@@ -94,6 +94,7 @@ def test_update_menu_item_trigger_webhook(
         ),
         WebhookEventAsyncType.MENU_ITEM_UPDATED,
         [any_webhook],
+        False,
         menu_item,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

@@ -91,6 +91,7 @@ def test_sale_translate(
         None,
         WebhookEventAsyncType.TRANSLATION_CREATED,
         [any_webhook],
+        False,
         translation,
         SimpleLazyObject(lambda: staff_api_client.user),
         legacy_data_generator=ANY,

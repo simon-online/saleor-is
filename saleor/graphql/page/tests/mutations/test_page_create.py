@@ -220,6 +220,7 @@ def test_page_create_trigger_page_webhook(
         None,
         WebhookEventAsyncType.PAGE_CREATED,
         [any_webhook],
+        False,
         page,
         SimpleLazyObject(lambda: staff_api_client.user),
         legacy_data_generator=ANY,

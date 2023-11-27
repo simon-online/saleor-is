@@ -198,6 +198,7 @@ def test_create_shipping_method_trigger_webhook(
         ),
         WebhookEventAsyncType.SHIPPING_PRICE_CREATED,
         [any_webhook],
+        False,
         shipping_method,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

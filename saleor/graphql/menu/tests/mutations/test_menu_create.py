@@ -133,6 +133,7 @@ def test_create_menu_trigger_webhook(
         ),
         WebhookEventAsyncType.MENU_CREATED,
         [any_webhook],
+        False,
         menu,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

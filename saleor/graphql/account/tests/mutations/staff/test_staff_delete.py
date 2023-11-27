@@ -93,6 +93,7 @@ def test_staff_delete_trigger_webhook(
         ),
         WebhookEventAsyncType.STAFF_DELETED,
         [any_webhook],
+        False,
         staff_user,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

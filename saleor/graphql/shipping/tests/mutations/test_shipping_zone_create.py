@@ -151,6 +151,7 @@ def test_create_shipping_zone_trigger_webhook(
         ),
         WebhookEventAsyncType.SHIPPING_ZONE_CREATED,
         [any_webhook],
+        False,
         shipping_zone,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

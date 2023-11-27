@@ -167,6 +167,7 @@ def test_update_shipping_method_trigger_webhook(
         ),
         WebhookEventAsyncType.SHIPPING_PRICE_UPDATED,
         [any_webhook],
+        False,
         shipping_method,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

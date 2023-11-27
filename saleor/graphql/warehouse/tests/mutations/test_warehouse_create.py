@@ -182,6 +182,7 @@ def test_mutation_create_warehouse_trigger_webhook(
         ),
         WebhookEventAsyncType.WAREHOUSE_CREATED,
         [any_webhook],
+        False,
         warehouse,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

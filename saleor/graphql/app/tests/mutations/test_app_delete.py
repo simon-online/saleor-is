@@ -103,6 +103,7 @@ def test_app_delete_trigger_webhook(
         ),
         WebhookEventAsyncType.APP_DELETED,
         [any_webhook],
+        False,
         app,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

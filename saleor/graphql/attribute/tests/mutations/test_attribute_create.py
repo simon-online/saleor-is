@@ -175,6 +175,7 @@ def test_create_attribute_trigger_webhook(
         ),
         WebhookEventAsyncType.ATTRIBUTE_CREATED,
         [any_webhook],
+        False,
         attribute,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

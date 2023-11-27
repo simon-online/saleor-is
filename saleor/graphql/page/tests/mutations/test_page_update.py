@@ -185,6 +185,7 @@ def test_update_page_trigger_webhook(
         None,
         WebhookEventAsyncType.PAGE_UPDATED,
         [any_webhook],
+        False,
         page,
         SimpleLazyObject(lambda: staff_api_client.user),
         legacy_data_generator=ANY,

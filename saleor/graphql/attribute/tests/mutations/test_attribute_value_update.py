@@ -164,6 +164,7 @@ def test_update_attribute_value_trigger_webhooks(
         ),
         WebhookEventAsyncType.ATTRIBUTE_UPDATED,
         [any_webhook],
+        False,
         attribute,
         SimpleLazyObject(lambda: staff_api_client.user),
     )
@@ -181,6 +182,7 @@ def test_update_attribute_value_trigger_webhooks(
         ),
         WebhookEventAsyncType.ATTRIBUTE_VALUE_UPDATED,
         [any_webhook],
+        False,
         value,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

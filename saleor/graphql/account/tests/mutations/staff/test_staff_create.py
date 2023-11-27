@@ -253,6 +253,7 @@ def test_staff_create_trigger_webhook(
         ),
         WebhookEventAsyncType.STAFF_CREATED,
         [any_webhook],
+        False,
         new_staff_user,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

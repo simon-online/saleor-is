@@ -68,6 +68,7 @@ def test_page_delete_trigger_webhook(
         None,
         WebhookEventAsyncType.PAGE_DELETED,
         [any_webhook],
+        False,
         page,
         SimpleLazyObject(lambda: staff_api_client.user),
         legacy_data_generator=ANY,

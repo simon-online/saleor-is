@@ -111,6 +111,7 @@ def test_update_voucher_trigger_webhook(
         ),
         WebhookEventAsyncType.VOUCHER_UPDATED,
         [any_webhook],
+        False,
         voucher,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

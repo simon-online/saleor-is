@@ -696,6 +696,7 @@ def test_create_gift_card_trigger_webhook(
         ),
         WebhookEventAsyncType.GIFT_CARD_CREATED,
         [any_webhook],
+        False,
         gift_card,
         SimpleLazyObject(lambda: app_api_client.app),
     )
@@ -771,6 +772,7 @@ def test_create_gift_card_with_email_triggers_gift_card_sent_webhook(
         ),
         WebhookEventAsyncType.GIFT_CARD_SENT,
         [any_webhook],
+        False,
         {
             "gift_card": gift_card,
             "channel_slug": channel_USD.slug,

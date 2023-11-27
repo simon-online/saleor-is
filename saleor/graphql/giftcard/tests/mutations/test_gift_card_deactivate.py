@@ -217,6 +217,7 @@ def test_deactivate_gift_card_trigger_webhook(
         ),
         WebhookEventAsyncType.GIFT_CARD_STATUS_CHANGED,
         [any_webhook],
+        False,
         gift_card,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

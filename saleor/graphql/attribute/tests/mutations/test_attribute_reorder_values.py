@@ -217,6 +217,7 @@ def test_sort_values_trigger_webhook(
         ),
         WebhookEventAsyncType.ATTRIBUTE_UPDATED,
         [any_webhook],
+        False,
         color_attribute,
         SimpleLazyObject(lambda: staff_api_client.user),
     )
@@ -235,6 +236,7 @@ def test_sort_values_trigger_webhook(
             ),
             WebhookEventAsyncType.ATTRIBUTE_VALUE_UPDATED,
             [any_webhook],
+            False,
             value,
             SimpleLazyObject(lambda: staff_api_client.user),
         )

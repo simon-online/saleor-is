@@ -99,6 +99,7 @@ def test_delete_shipping_method_trigger_webhook(
         ),
         WebhookEventAsyncType.SHIPPING_PRICE_DELETED,
         [any_webhook],
+        False,
         shipping_method,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

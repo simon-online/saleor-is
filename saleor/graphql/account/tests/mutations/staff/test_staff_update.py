@@ -167,6 +167,7 @@ def test_staff_update_trigger_webhook(
         ),
         WebhookEventAsyncType.STAFF_UPDATED,
         [any_webhook],
+        False,
         staff_user,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

@@ -99,6 +99,7 @@ def test_channel_activate_mutation_trigger_webhook(
         ),
         WebhookEventAsyncType.CHANNEL_STATUS_CHANGED,
         [any_webhook],
+        False,
         channel_USD,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

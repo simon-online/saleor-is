@@ -134,6 +134,7 @@ def test_app_update_trigger_mutation(
         ),
         WebhookEventAsyncType.APP_UPDATED,
         [any_webhook],
+        False,
         app_with_token,
         SimpleLazyObject(lambda: staff_api_client.user),
     )

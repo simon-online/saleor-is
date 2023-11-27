@@ -205,7 +205,7 @@ def test_refund_for_manual_payment(payment_txn_captured):
     payment_txn_captured.gateway = CustomPaymentChoices.MANUAL
     transaction = gateway.refund(
         payment=payment_txn_captured,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         amount=PARTIAL_REFUND_AMOUNT,
         channel_slug=payment_txn_captured.order.channel.slug,
     )
@@ -358,7 +358,7 @@ def test_request_charge_action_missing_active_event(
     with pytest.raises(PaymentError):
         request_charge_action(
             transaction=transaction,
-            manager=get_plugins_manager(),
+            manager=get_plugins_manager(allow_replica=False),
             charge_value=action_value,
             channel_slug=order.channel.slug,
             user=staff_user,
@@ -404,7 +404,7 @@ def test_request_charge_action_on_order(
     # when
     request_charge_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         charge_value=action_value,
         channel_slug=order.channel.slug,
         user=staff_user,
@@ -468,7 +468,7 @@ def test_request_charge_action_by_app(
     # when
     request_charge_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         charge_value=action_value,
         channel_slug=order.channel.slug,
         user=None,
@@ -521,7 +521,7 @@ def test_request_charge_action_by_removed_app(
     # when
     request_charge_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         charge_value=action_value,
         channel_slug=order.channel.slug,
         user=None,
@@ -581,7 +581,7 @@ def test_request_charge_action_on_checkout(
     # when
     request_charge_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         charge_value=action_value,
         channel_slug=checkout.channel.slug,
         user=staff_user,
@@ -628,7 +628,7 @@ def test_request_refund_action_missing_active_event(
     with pytest.raises(PaymentError):
         request_refund_action(
             transaction=transaction,
-            manager=get_plugins_manager(),
+            manager=get_plugins_manager(allow_replica=False),
             refund_value=action_value,
             channel_slug=order.channel.slug,
             user=staff_user,
@@ -674,7 +674,7 @@ def test_request_refund_action_on_order(
     # when
     request_refund_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         refund_value=action_value,
         channel_slug=order.channel.slug,
         user=staff_user,
@@ -748,7 +748,7 @@ def test_request_refund_action_with_granted_refund(
     # when
     request_refund_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         refund_value=action_value,
         channel_slug=order_with_lines.channel.slug,
         user=staff_user,
@@ -815,7 +815,7 @@ def test_request_refund_action_by_app(
     # when
     request_refund_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         refund_value=action_value,
         channel_slug=order.channel.slug,
         user=None,
@@ -881,7 +881,7 @@ def test_request_refund_action_on_checkout(
     # when
     request_refund_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         refund_value=action_value,
         channel_slug=checkout.channel.slug,
         user=staff_user,
@@ -927,7 +927,7 @@ def test_request_cancelation_action_missing_active_event(
     with pytest.raises(PaymentError):
         request_cancelation_action(
             transaction=transaction,
-            manager=get_plugins_manager(),
+            manager=get_plugins_manager(allow_replica=False),
             cancel_value=None,
             channel_slug=order.channel.slug,
             user=staff_user,
@@ -974,7 +974,7 @@ def test_request_cancelation_action_on_order(
     # when
     request_cancelation_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         cancel_value=None,
         channel_slug=order.channel.slug,
         user=staff_user,
@@ -1038,7 +1038,7 @@ def test_request_cancelation_action_by_app(
     # when
     request_cancelation_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         cancel_value=None,
         channel_slug=order.channel.slug,
         user=None,
@@ -1104,7 +1104,7 @@ def test_request_cancelation_action_on_checkout(
     # when
     request_cancelation_action(
         transaction=transaction,
-        manager=get_plugins_manager(),
+        manager=get_plugins_manager(allow_replica=False),
         cancel_value=None,
         channel_slug=checkout.channel.slug,
         user=staff_user,
@@ -1132,7 +1132,7 @@ def test_request_cancelation_action_on_checkout(
 def test_payment_refund_or_void_no_payment(refund_mock, void_mock):
     """Test that neither refund nor void is called when there is no payment object."""
     # when
-    gateway.payment_refund_or_void(None, get_plugins_manager(), None)
+    gateway.payment_refund_or_void(None, get_plugins_manager(allow_replica=False), None)
 
     # then
     refund_mock.assert_not_called()
@@ -1148,7 +1148,9 @@ def test_payment_refund_or_void_refund_called(refund_mock, payment):
     payment.save(update_fields=["charge_status"])
 
     # when
-    gateway.payment_refund_or_void(payment, get_plugins_manager(), None)
+    gateway.payment_refund_or_void(
+        payment, get_plugins_manager(allow_replica=False), None
+    )
 
     # then
     assert refund_mock.called_once()
@@ -1176,7 +1178,9 @@ def test_payment_refund_or_void_refund_not_called_refund_already_started(
     )
 
     # when
-    gateway.payment_refund_or_void(payment, get_plugins_manager(), None)
+    gateway.payment_refund_or_void(
+        payment, get_plugins_manager(allow_replica=False), None
+    )
 
     # then
     refund_mock.assert_not_called()
@@ -1203,7 +1207,10 @@ def test_payment_refund_or_void_refund_called_txn_exist(refund_mock, payment):
 
     # when
     gateway.payment_refund_or_void(
-        payment, get_plugins_manager(), None, transaction_id=txn.token
+        payment,
+        get_plugins_manager(allow_replica=False),
+        None,
+        transaction_id=txn.token,
     )
 
     # then
@@ -1233,7 +1240,10 @@ def test_payment_refund_or_void_refund_called_no_txn_with_given_transaction_id(
 
     # when
     gateway.payment_refund_or_void(
-        payment, get_plugins_manager(), None, transaction_id="another value"
+        payment,
+        get_plugins_manager(allow_replica=False),
+        None,
+        transaction_id="another value",
     )
 
     # then
@@ -1249,7 +1259,9 @@ def test_payment_refund_or_void_void_called(void_mock, payment):
     payment.transactions.count() == 0
 
     # when
-    gateway.payment_refund_or_void(payment, get_plugins_manager(), None)
+    gateway.payment_refund_or_void(
+        payment, get_plugins_manager(allow_replica=False), None
+    )
 
     # then
     assert void_mock.called_once()
@@ -1275,7 +1287,10 @@ def test_payment_refund_or_void_void_not_called_txn_exist(void_mock, payment):
 
     # when
     gateway.payment_refund_or_void(
-        payment, get_plugins_manager(), None, transaction_id=txn.token
+        payment,
+        get_plugins_manager(allow_replica=False),
+        None,
+        transaction_id=txn.token,
     )
 
     # then

@@ -100,6 +100,7 @@ def test_deactivate_app_trigger_webhook(
         ),
         WebhookEventAsyncType.APP_STATUS_CHANGED,
         [any_webhook],
+        False,
         app,
         SimpleLazyObject(lambda: staff_api_client.user),
     )
