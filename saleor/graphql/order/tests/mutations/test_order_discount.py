@@ -368,14 +368,17 @@ def test_update_percentage_order_discount_to_order(
     assert discount_data["amount_value"] == str(discount_amount.amount)
 
 
+@patch("saleor.order.calculations.PluginsManager.calculate_order_shipping")
 @pytest.mark.parametrize("status", [OrderStatus.DRAFT, OrderStatus.UNCONFIRMED])
 def test_update_fixed_order_discount_to_order(
+    mocked_function,
     status,
     draft_order_with_fixed_discount_order,
     staff_api_client,
     permission_group_manage_orders,
 ):
     order = draft_order_with_fixed_discount_order
+    mocked_function.return_value = order.shipping_price
     order.status = status
     order.save(update_fields=["status"])
     order_discount = draft_order_with_fixed_discount_order.discounts.get()
