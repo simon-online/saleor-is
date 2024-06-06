@@ -1,4 +1,5 @@
 import graphene
+from decimal import Decimal
 
 from ....checkout.error_codes import CheckoutErrorCode
 from ....checkout.fetch import (
@@ -35,6 +36,7 @@ from .utils import (
     validate_variants_available_for_purchase,
 )
 
+from ....product.models import ProductVariantChannelListing
 
 class CheckoutLinesAdd(BaseMutation):
     checkout = graphene.Field(Checkout, description="An updated checkout.")
@@ -150,6 +152,17 @@ class CheckoutLinesAdd(BaseMutation):
 
         if variants and checkout_lines_data:
             site = get_site_promise(info.context).get()
+
+            if checkout.user and checkout.user.get_value_from_metadata('sub_id'):
+                for i, variant in enumerate(variants):
+                    if variant.product.product_type.slug == 'kit':
+                        variant_listing = ProductVariantChannelListing.objects.get(variant_id=variant.id, channel_id=checkout.channel_id)
+
+                        if variant_listing and variant_listing.price_amount:
+                            sub_price = variant_listing.price_amount * Decimal('0.85')
+                            checkout_lines_data[i].custom_price = round(sub_price, 2)
+                            checkout_lines_data[i].custom_price_to_update = True
+
             checkout = add_variants_to_checkout(
                 checkout,
                 variants,
