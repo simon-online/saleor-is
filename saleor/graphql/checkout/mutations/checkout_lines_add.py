@@ -38,6 +38,10 @@ from .utils import (
 
 from ....product.models import ProductVariantChannelListing
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 class CheckoutLinesAdd(BaseMutation):
     checkout = graphene.Field(Checkout, description="An updated checkout.")
 
@@ -155,11 +159,32 @@ class CheckoutLinesAdd(BaseMutation):
 
             if checkout.user and checkout.user.get_value_from_metadata('sub_id'):
                 for i, variant in enumerate(variants):
+                    line_data = checkout_lines_data[i]
+
+                    logger.error('variant {variant_id} {sku}'.format(
+                        variant_id=variant.id, sku=variant.sku
+                    ))
+                    logger.error('line_data {variant_id} {quantity} {update}'.format(
+                        variant_id=line_data.variant_id,
+                        quantity=line_data.quantity,
+                        update=line_data.quantity_to_update
+                    ))
+
+                    if not line_data.quantity_to_update or line_data.quantity == 0:
+                        continue
+
                     if variant.product.product_type.slug == 'kit':
-                        variant_listing = ProductVariantChannelListing.objects.get(variant_id=variant.id, channel_id=checkout.channel_id)
+                        variant_listing = ProductVariantChannelListing.objects.get(
+                            variant_id=variant.id, channel_id=checkout.channel_id
+                        )
 
                         if variant_listing and variant_listing.price_amount:
                             sub_price = variant_listing.price_amount * Decimal('0.85')
+
+                            logger.error('update kit price for {sku} to {price}'.format(
+                                sku=variant.sku, price=sub_price
+                            ))
+
                             checkout_lines_data[i].custom_price = round(sub_price, 2)
                             checkout_lines_data[i].custom_price_to_update = True
 
