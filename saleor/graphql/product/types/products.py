@@ -359,6 +359,10 @@ class ProductVariant(ChannelContextTypeWithMetadata[models.ProductVariant]):
         description="Digital content for the product variant.",
         permissions=[ProductPermissions.MANAGE_PRODUCTS],
     )
+    on_backorder = graphene.Boolean(
+        required=False,
+        description="Is the product variant on backorder.",
+    )
     stocks = PermissionsField(
         NonNullList(Stock),
         description="Stocks for the product variant.",
@@ -428,6 +432,34 @@ class ProductVariant(ChannelContextTypeWithMetadata[models.ProductVariant]):
     @staticmethod
     def resolve_channel(root: ChannelContext[models.Product], _info):
         return root.channel_slug
+
+    @staticmethod
+    def resolve_on_backorder(
+        root: ChannelContext[models.ProductVariant],
+        info,
+        address=None,
+        country_code=None,
+    ):
+        stocks = []
+
+        if address is not None:
+            country_code = address.country
+        channle_slug = root.channel_slug
+        if channle_slug or country_code:
+            stocks = StocksWithAvailableQuantityByProductVariantIdCountryCodeAndChannelLoader(
+                info.context
+            ).load((root.node.id, country_code, root.channel_slug))
+        else:
+            stocks = StocksByProductVariantIdLoader(info.context).load(root.node.id)
+
+        def determine_on_backorder_status(stocks):
+            for stock in stocks:
+                if stock.warehouse.slug == 'backorder-australia' and stock.quantity:
+                    return True
+
+            return False
+
+        return stocks.then(determine_on_backorder_status)
 
     @staticmethod
     def resolve_stocks(
