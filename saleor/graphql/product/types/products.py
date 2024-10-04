@@ -359,9 +359,9 @@ class ProductVariant(ChannelContextTypeWithMetadata[models.ProductVariant]):
         description="Digital content for the product variant.",
         permissions=[ProductPermissions.MANAGE_PRODUCTS],
     )
-    on_backorder = graphene.Int(
+    on_backorder = graphene.Boolean(
         required=False,
-        description="Backorder stock count for the product variant.",
+        description="Is the product variant on backorder.",
     )
     stocks = PermissionsField(
         NonNullList(Stock),
@@ -454,10 +454,10 @@ class ProductVariant(ChannelContextTypeWithMetadata[models.ProductVariant]):
 
         def determine_on_backorder_status(stocks):
             for stock in stocks:
-                if stock.warehouse.slug == 'backorder-australia':
-                    return stock.quantity - stock.quantity_allocated if stock.quantity else 0
+                if stock.warehouse.slug == 'backorder-australia' and stock.quantity:
+                    return True
 
-            return 0
+            return False
 
         return stocks.then(determine_on_backorder_status)
 
