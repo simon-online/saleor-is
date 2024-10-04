@@ -1,6 +1,6 @@
 import graphene
 from django.core.exceptions import ValidationError
-from django.core.files import File
+from django.core.files.base import ContentFile
 
 from .....core.http_client import HTTPClient
 from .....core.utils.validators import get_oembed_data
@@ -124,9 +124,9 @@ class ProductMediaCreate(BaseMutation):
                 )
                 filename = get_filename_from_url(media_url)
                 image_data = HTTPClient.send_request(
-                    "GET", media_url, stream=True, allow_redirects=False
+                    "GET", media_url, stream=False, allow_redirects=False
                 )
-                image_file = File(image_data.raw, filename)
+                image_file = ContentFile(image_data.content, filename)
                 media = product.media.create(
                     image=image_file,
                     alt=alt,

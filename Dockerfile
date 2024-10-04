@@ -8,11 +8,14 @@ RUN apt-get -y update \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
+COPY eway.zip /app/
 WORKDIR /app
 RUN --mount=type=cache,mode=0755,target=/root/.cache/pip pip install poetry==1.7.0
 RUN poetry config virtualenvs.create false
 COPY poetry.lock pyproject.toml /app/
+RUN --mount=type=cache,mode=0755,target=/root/.cache/pypoetry poetry lock --no-update
 RUN --mount=type=cache,mode=0755,target=/root/.cache/pypoetry poetry install --no-root
+RUN pip install eway.zip
 
 ### Final image
 FROM python:3.9-slim
