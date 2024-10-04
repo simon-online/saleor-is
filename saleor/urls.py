@@ -4,7 +4,7 @@ from django.contrib.staticfiles.views import serve
 from django.urls import include, re_path
 from django.views.decorators.csrf import csrf_exempt
 
-from .core.views import jwks
+from .core.views import jwks, home
 from .graphql.api import backend, schema
 from .graphql.views import GraphQLView
 from .plugins.views import (
@@ -51,12 +51,11 @@ urlpatterns = [
         name="thumbnail",
     ),
     re_path(r"^\.well-known/jwks.json$", jwks, name="jwks"),
+    re_path(r"^$", home, name="home"),
 ]
 
 if settings.DEBUG:
     import warnings
-
-    from .core import views
 
     try:
         import debug_toolbar
@@ -72,5 +71,4 @@ if settings.DEBUG:
 
     urlpatterns += static("/media/", document_root=settings.MEDIA_ROOT) + [
         re_path(r"^static/(?P<path>.*)$", serve),
-        re_path(r"^$", views.home, name="home"),
     ]

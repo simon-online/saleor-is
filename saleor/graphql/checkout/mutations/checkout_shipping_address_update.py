@@ -146,15 +146,15 @@ class CheckoutShippingAddressUpdate(AddressMetadataMixin, BaseMutation, I18nMixi
             checkout,
         )
 
-        if use_legacy_error_flow_for_checkout and not is_shipping_required(lines):
-            raise ValidationError(
-                {
-                    "shipping_address": ValidationError(
-                        ERROR_DOES_NOT_SHIP,
-                        code=CheckoutErrorCode.SHIPPING_NOT_REQUIRED.value,
-                    )
-                }
-            )
+        #if use_legacy_error_flow_for_checkout and not is_shipping_required(lines):
+        #    raise ValidationError(
+        #        {
+        #            "shipping_address": ValidationError(
+        #                ERROR_DOES_NOT_SHIP,
+        #                code=CheckoutErrorCode.SHIPPING_NOT_REQUIRED.value,
+        #            )
+        #        }
+        #    )
         # prevent from changing the shipping address when click and collect is used.
         if checkout.collection_point_id:
             raise ValidationError(

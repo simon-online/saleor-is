@@ -85,10 +85,10 @@ ROOT_URLCONF = "saleor.urls"
 
 WSGI_APPLICATION = "saleor.wsgi.application"
 
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
-MANAGERS = ADMINS
+ADMINS = [
+    ('Simon Watson', 'simon@moonbuggymedia.com'),
+]
+MANAGERS = ()
 
 APPEND_SLASH = False
 
@@ -394,23 +394,23 @@ LOGGING = {
     "handlers": {
         "default": {
             "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose" if DEBUG else "json",
+            "class": "google.cloud.logging.handlers.StructuredLogHandler",
+            #"formatter": "verbose" if DEBUG else "json",
         },
         "django.server": {
             "level": "INFO",
-            "class": "logging.StreamHandler",
-            "formatter": "django.server" if DEBUG else "json",
+            "class": "google.cloud.logging.handlers.StructuredLogHandler",
+            #"formatter": "django.server" if DEBUG else "json",
         },
         "celery_app": {
             "level": "INFO",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose" if DEBUG else "celery_json",
+            "class": "google.cloud.logging.handlers.StructuredLogHandler",
+            #"formatter": "verbose" if DEBUG else "celery_json",
         },
         "celery_task": {
             "level": "INFO",
-            "class": "logging.StreamHandler",
-            "formatter": "verbose" if DEBUG else "celery_task_json",
+            "class": "google.cloud.logging.handlers.StructuredLogHandler",
+            #"formatter": "verbose" if DEBUG else "celery_task_json",
         },
         "null": {
             "class": "logging.NullHandler",
@@ -487,6 +487,7 @@ ALLOWED_GRAPHQL_ORIGINS: list[str] = get_list(
 )
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_REDIRECT_EXEMPT = [r'^$']
 
 # Amazon S3 configuration
 # See https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
@@ -618,6 +619,7 @@ BEAT_PRICE_RECALCULATION_SCHEDULE = parse(
 )
 BEAT_PRICE_RECALCULATION_SCHEDULE_EXPIRE_AFTER_SEC = BEAT_PRICE_RECALCULATION_SCHEDULE
 
+CELERY_BEAT_SCHEDULER = "saleor.schedulers.schedulers.PersistentScheduler"
 # Defines the Celery beat scheduler entries.
 #
 # Note: if a Celery task triggered by a Celery beat entry has an expiration

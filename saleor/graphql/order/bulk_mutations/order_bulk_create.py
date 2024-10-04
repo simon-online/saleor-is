@@ -26,6 +26,7 @@ from ....core.utils.url import validate_storefront_url
 from ....core.weight import zero_weight
 from ....discount.models import OrderDiscount, VoucherCode
 from ....discount.utils.manual_discount import apply_discount_to_value
+from ....discount import DiscountValueType
 from ....giftcard.models import GiftCard
 from ....invoice.models import Invoice
 from ....order import (
@@ -1024,7 +1025,13 @@ class OrderBulkCreate(BaseMutation, I18nMixin):
         metadata_list = billing_address_input.pop("metadata", None)
         private_metadata_list = billing_address_input.pop("private_metadata", None)
         try:
-            billing_address = cls.validate_address(billing_address_input, info=info)
+            billing_address = cls.validate_address(
+                billing_address_input,
+                info=info,
+                format_check=False,
+                required_check=False,
+                enable_normalization=False
+            )
             cls.validate_and_update_metadata(
                 billing_address, metadata_list, private_metadata_list
             )
@@ -1044,7 +1051,11 @@ class OrderBulkCreate(BaseMutation, I18nMixin):
             private_metadata_list = shipping_address_input.pop("private_metadata", None)
             try:
                 shipping_address = cls.validate_address(
-                    shipping_address_input, info=info
+                    shipping_address_input,
+                    info=info,
+                    format_check=False,
+                    required_check=False,
+                    enable_normalization=False
                 )
                 cls.validate_and_update_metadata(
                     shipping_address, metadata_list, private_metadata_list
@@ -1227,8 +1238,9 @@ class OrderBulkCreate(BaseMutation, I18nMixin):
         """Calculate all order amount fields."""
 
         # Calculate shipping amounts
-        shipping_price_net_amount = Decimal(0)
-        shipping_price_gross_amount = Decimal(0)
+        zero_value = Decimal(0)
+        shipping_price_net_amount = zero_value
+        shipping_price_gross_amount = zero_value
         shipping_tax_rate = Decimal(delivery_input.get("shipping_tax_rate") or 0)
 
         if delivery_method.shipping_method:
@@ -1479,12 +1491,30 @@ class OrderBulkCreate(BaseMutation, I18nMixin):
                 )
             )
 
-        return OrderDiscount(
-            order=order_data.order,
-            value_type=discount_input["value_type"],
-            value=discount_input["value"],
-            reason=discount_input.get("reason"),
-        )
+        value_type = discount_input["value_type"]
+        value = discount_input["value"]
+
+        if value_type == DiscountValueType.PERCENTAGE:
+            return OrderDiscount(
+                order=order_data.order,
+                value_type=value_type,
+                value=value,
+                amount_value=round(
+                    Decimal(value) / Decimal(100)
+                    * order_amounts.undiscounted_total_gross
+                , 2),
+                currency=currency,
+                reason=discount_input.get("reason"),
+            )
+        else:
+            return OrderDiscount(
+                order=order_data.order,
+                value_type=value_type,
+                value=value,
+                amount_value=value,
+                currency=currency,
+                reason=discount_input.get("reason"),
+            )
 
     @classmethod
     def create_single_invoice(
@@ -1681,6 +1711,7 @@ class OrderBulkCreate(BaseMutation, I18nMixin):
             or "",
             translated_variant_name=order_line_input.get("translated_variant_name")
             or "",
+            product_sku=variant.sku,
             product_variant_id=(variant.get_global_id() if variant else None),
             product_sku=order_line_input.get("product_sku"),
             created_at=order_line_input["created_at"],
