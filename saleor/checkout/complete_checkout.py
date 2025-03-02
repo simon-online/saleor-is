@@ -385,7 +385,7 @@ def _create_line_for_order(
         quantity=quantity,
         is_digital=is_digital,
         variant=variant,
-        digital_content=variant.digital_content if is_digital and variant else None,
+        digital_content=variant.digital_content if is_digital and variant and hasattr(variant, "digital_content") else None,
         warehouse_pk=checkout_info.delivery_method_info.warehouse_pk,
         line_discounts=line_discounts,
     )

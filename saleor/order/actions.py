@@ -1080,7 +1080,8 @@ def automatically_fulfill_digital_lines(
     digital_lines_data = [
         line_data
         for line_data in order_info.lines_data
-        if not line_data.line.is_shipping_required and line_data.digital_content
+        if not line_data.line.is_shipping_required
+        # if not line_data.line.is_shipping_required and line_data.digital_content
     ]
     # transaction ensures fulfillment consistency
     with traced_atomic_transaction():
@@ -1127,6 +1128,8 @@ def automatically_fulfill_digital_lines(
         )
         if created:
             manager.fulfillment_created(fulfillment)
+
+        order.refresh_from_db()
         update_order_status(order)
 
 
@@ -1217,8 +1220,8 @@ def _create_fulfillment_lines(
                     warehouse_pk=warehouse_pk,
                 )
             )
-            if variant and is_digital:
-                variant.digital_content.urls.create(line=order_line)
+            # if variant and is_digital:
+            #     variant.digital_content.urls.create(line=order_line)
             fulfillment_line = FulfillmentLine(
                 order_line=order_line,
                 fulfillment=fulfillment,

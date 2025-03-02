@@ -176,23 +176,20 @@ class I18nMixin:
             cls.can_skip_address_validation(info)
             format_check = False
 
-        if format_check or required_check or enable_normalization:
-            address_form = cls._validate_address_form(
-                address_data,
-                address_type,
-                format_check=format_check,
-                required_check=required_check,
-                enable_normalization=enable_normalization,
-            )
-            address_data = address_form.cleaned_data
+        address_form = cls._validate_address_form(
+            address_data,
+            address_type,
+            format_check=format_check,
+            required_check=required_check,
+            enable_normalization=enable_normalization,
+        )
+        address_data = address_form.cleaned_data
 
         if not instance:
             instance = Address()
 
         cls.construct_instance(instance, address_data)
-
-        if format_check or required_check or enable_normalization:
-            cls.clean_instance(info, instance)
+        cls.clean_instance(info, instance)
 
         return instance
 
