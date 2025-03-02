@@ -130,10 +130,10 @@ class CheckoutLinesAdd(BaseMutation):
                 for i, variant in enumerate(variants):
                     line_data = checkout_lines_data[i]
 
-                    logger.error('variant {variant_id} {sku}'.format(
+                    logger.info('sub_dis variant {variant_id} {sku}'.format(
                         variant_id=variant.id, sku=variant.sku
                     ))
-                    logger.error('line_data {variant_id} {quantity} {update}'.format(
+                    logger.info('sub_dis line_data {variant_id} {quantity} {update}'.format(
                         variant_id=line_data.variant_id,
                         quantity=line_data.quantity,
                         update=line_data.quantity_to_update
@@ -153,7 +153,7 @@ class CheckoutLinesAdd(BaseMutation):
                            and variant_listing.price_amount == variant_listing.discounted_price_amount:
                             sub_price = variant_listing.price_amount * Decimal('0.85')
 
-                            logger.error('update kit price for {sku} to {price}'.format(
+                            logger.info('sub_dis update kit price for {sku} to {price}'.format(
                                 sku=variant.sku, price=sub_price
                             ))
 

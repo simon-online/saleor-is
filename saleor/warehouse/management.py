@@ -125,7 +125,6 @@ def allocate_stocks(
     stocks = list(
         stock_select_for_update_for_existing_qs(stocks)
         .filter(**filter_lookup)
-        .order_by("pk")
         .values("product_variant", "pk", "quantity", "warehouse_id")
     )
     stocks_id = [stock.get("pk") for stock in stocks]
