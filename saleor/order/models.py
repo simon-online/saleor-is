@@ -752,8 +752,9 @@ class OrderLine(ModelWithMetadata):
         if not self.variant:
             return False
         is_digital = self.variant.is_digital()
-        has_digital = hasattr(self.variant, "digital_content")
-        return is_digital and has_digital
+        # has_digital = hasattr(self.variant, "digital_content")
+        # return is_digital and has_digital
+        return is_digital
 
 
 class Fulfillment(ModelWithMetadata):

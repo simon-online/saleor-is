@@ -2966,10 +2966,10 @@ class PluginsManager(PaymentInterface):
             - graphql.execution.ExecutionResult
 
         """
-        logger.warning(
-            "The manager.perform_mutation method is deprecated and will be removed in "
-            "Saleor 3.21"
-        )
+        # logger.warning(
+        #     "The manager.perform_mutation method is deprecated and will be removed in "
+        #     "Saleor 3.21"
+        # )
         return self.__run_method_on_plugins(
             "perform_mutation",
             default_value=None,

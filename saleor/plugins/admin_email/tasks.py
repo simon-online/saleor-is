@@ -56,7 +56,7 @@ def send_export_failed_email_task(
 
 @app.task(compression="zlib")
 def send_staff_order_confirmation_email_task(
-    recipient_list: str, payload: dict, config: dict, subject, template
+    recipient_list: list[str], payload: dict, config: dict, subject, template
 ):
     email_config = EmailConfig(**config)
     send_email(
