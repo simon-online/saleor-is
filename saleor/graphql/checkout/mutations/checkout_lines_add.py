@@ -26,6 +26,7 @@ from ...site.dataloaders import get_site_promise
 from ..types import Checkout
 from .checkout_create import CheckoutLineInput
 from .utils import (
+    CheckoutLineData,
     check_lines_quantity,
     check_permissions_for_custom_prices,
     get_checkout,
@@ -162,10 +163,10 @@ class CheckoutLinesAdd(BaseMutation):
                 for i, variant in enumerate(variants):
                     line_data = checkout_lines_data[i]
 
-                    logger.error('variant {variant_id} {sku}'.format(
+                    logger.info('sub_dis variant {variant_id} {sku}'.format(
                         variant_id=variant.id, sku=variant.sku
                     ))
-                    logger.error('line_data {variant_id} {quantity} {update}'.format(
+                    logger.info('sub_dis line_data {variant_id} {quantity} {update}'.format(
                         variant_id=line_data.variant_id,
                         quantity=line_data.quantity,
                         update=line_data.quantity_to_update
@@ -179,10 +180,13 @@ class CheckoutLinesAdd(BaseMutation):
                             variant_id=variant.id, channel_id=checkout.channel_id
                         )
 
-                        if variant_listing and variant_listing.price_amount:
+                        # Only apply subscriber discount if kit not discounted
+                        if variant_listing and variant_listing.price_amount \
+                           and variant_listing.discounted_price_amount \
+                           and variant_listing.price_amount == variant_listing.discounted_price_amount:
                             sub_price = variant_listing.price_amount * Decimal('0.85')
 
-                            logger.error('update kit price for {sku} to {price}'.format(
+                            logger.info('sub_dis update kit price for {sku} to {price}'.format(
                                 sku=variant.sku, price=sub_price
                             ))
 
@@ -231,7 +235,7 @@ class CheckoutLinesAdd(BaseMutation):
 
         checkout = get_checkout(cls, info, checkout_id=checkout_id, token=token, id=id)
         manager = get_plugin_manager_promise(info.context).get()
-        variants = cls._get_variants_from_lines_input(lines)
+        # variants = cls._get_variants_from_lines_input(lines)
         shipping_channel_listings = checkout.channel.shipping_method_listings.all()
         checkout_info = fetch_checkout_info(
             checkout, [], manager, shipping_channel_listings
@@ -240,6 +244,7 @@ class CheckoutLinesAdd(BaseMutation):
             checkout, skip_lines_with_unavailable_variants=False
         )
         input_lines_data = cls._get_grouped_lines_data(lines, existing_lines_info)
+        variants = cls._get_variants_from_lines_data(input_lines_data)
         lines = cls.clean_input(
             info,
             checkout,
@@ -262,6 +267,21 @@ class CheckoutLinesAdd(BaseMutation):
         )
 
         return CheckoutLinesAdd(checkout=checkout)
+
+    @classmethod
+    def _get_variants_from_lines_data(
+        cls,
+        lines: list[CheckoutLineData]
+    ) -> list[ProductVariant]:
+        """Return list of ProductVariant objects.
+
+        Uses variants ids provided in CheckoutLineInput to fetch ProductVariant objects.
+        """
+        variant_ids = [
+            graphene.Node.to_global_id("ProductVariant", line.variant_id)
+            for line in lines
+        ]
+        return cls.get_nodes_or_error(variant_ids, "variant_id", ProductVariant)
 
     @classmethod
     def _get_variants_from_lines_input(cls, lines: list[dict]) -> list[ProductVariant]:

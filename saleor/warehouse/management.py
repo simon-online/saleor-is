@@ -33,6 +33,10 @@ from .models import (
     Warehouse,
 )
 
+import pprint
+import logging
+logger = logging.getLogger(__name__)
+
 if TYPE_CHECKING:
     from ..channel.models import Channel
     from ..order.models import Order
@@ -87,9 +91,9 @@ def allocate_stocks(
         stocks.select_for_update(of=("self",))
         .filter(**filter_lookup)
         .order_by("pk")
-        .values("id", "product_variant", "pk", "quantity", "warehouse_id")
+        .values("product_variant", "pk", "quantity", "warehouse_id")
     )
-    stocks_id = (stock.pop("id") for stock in stocks)
+    stocks_id = [stock.get("pk") for stock in stocks]
 
     quantity_reservation_for_stocks: dict = _prepare_stock_to_reserved_quantity_map(
         checkout_lines, check_reservations, stocks_id
@@ -108,6 +112,18 @@ def allocate_stocks(
         quantity_allocation_for_stocks[allocation_data["stock"]] += allocation_data[
             "quantity_allocated_sum"
         ]
+
+    try:
+        logger.info(
+            'allocate_stocks stks {stks} sid {sid} qal {qal} qafs {qafs}'.format(
+                stks=pprint.pformat(stocks, width=300),
+                sid=pprint.pformat(stocks_id, width=300),
+                qal=pprint.pformat(quantity_allocation_list, width=300),
+                qafs=pprint.pformat(quantity_allocation_for_stocks, width=300)
+            )
+        )
+    except Exception as e:
+        logger.info('allocate_stocks: ' + str(e))
 
     stocks = sort_stocks(
         channel.allocation_strategy,
@@ -242,6 +258,21 @@ def _create_allocations(
     stocks_reservations: dict,
     insufficient_stock: list[InsufficientStockData],
 ):
+    sku = '?'
+    if line_info.variant:
+        sku = line_info.variant.sku
+
+    try:
+        logger.info(
+            '_create_allocations sku {sku} liq {liq} sa {sa} sr {sr}'.format(
+                sku=sku, liq=line_info.quantity,
+                sa=pprint.pformat(stocks_allocations, width=300),
+                sr=pprint.pformat(stocks_reservations, width=300)
+            )
+        )
+    except Exception as e:
+        logger.info('_create_allocations: ' + str(e))
+
     quantity = line_info.quantity
     quantity_allocated = 0
     allocations = []
@@ -253,6 +284,17 @@ def _create_allocations(
         quantity_to_allocate = min(
             (quantity - quantity_allocated), quantity_available_in_stock
         )
+
+        try:
+            logger.info(
+                '_create_allocations pk {pk} sku {sku} sq {sq} qais {qais} qta {qta}'.format(
+                    pk=stock_data.pk, sku=sku, sq=stock_data.quantity,
+                    qais=quantity_available_in_stock, qta=quantity_to_allocate
+                )
+            )
+        except Exception as e:
+            logger.info('_create_allocations: ' + str(e))
+
         if quantity_to_allocate > 0:
             allocations.append(
                 Allocation(
