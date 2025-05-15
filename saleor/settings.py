@@ -1030,6 +1030,13 @@ ENABLE_DEPRECATED_MANAGER_PERFORM_MUTATION = get_bool_from_env(
     "ENABLE_DEPRECATED_MANAGER_PERFORM_MUTATION", True
 )
 
+# Used by eWay plugin
+STOREFRONT_URL = os.environ.get("STOREFRONT_URL", "")
+
+# Used by eWay plugin for reCAPTCHA protection
+GOOGLE_PROJECT_ID = os.environ.get("GOOGLE_PROJECT_ID", "")
+RECAPTCHA_SITE_KEY = os.environ.get("RECAPTCHA_SITE_KEY", "")
+
 
 TOKEN_GENERATOR_CLASS = "django.contrib.auth.tokens.PasswordResetTokenGenerator"
 
