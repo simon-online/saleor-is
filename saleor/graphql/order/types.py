@@ -2011,10 +2011,12 @@ class Order(ModelObjectType[models.Order]):
 
             if transactions:
                 return get_payment_status_for_order(root, granted_refunds)
+
+            if root.total.gross.amount == 0:
+                return ChargeStatus.FULLY_CHARGED
+
             last_payment = get_last_payment(payments)
             if not last_payment:
-                if root.total.gross.amount == 0:
-                    return ChargeStatus.FULLY_CHARGED
                 return ChargeStatus.NOT_CHARGED
             return last_payment.charge_status
 
