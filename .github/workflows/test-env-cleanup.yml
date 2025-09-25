@@ -9,7 +9,8 @@ on:
 jobs:
   cleanup:
     name: Remove test environment deployment
-    if: ${{ ((github.event.action == 'unlabeled') && (github.event.label.name == 'test deployment')) || ((github.event.action == 'closed') && contains(github.event.pull_request.labels.*.name, 'test deployment')) }}
+    if: false  # This job will always be skipped
+#    if: ${{ ((github.event.action == 'unlabeled') && (github.event.label.name == 'test deployment')) || ((github.event.action == 'closed') && contains(github.event.pull_request.labels.*.name, 'test deployment')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: rlespinasse/github-slug-action@3.1.0
