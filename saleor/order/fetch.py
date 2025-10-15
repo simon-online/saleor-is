@@ -71,7 +71,9 @@ def fetch_order_lines(order: "Order") -> list[OrderLineInfo]:
                 is_digital=is_digital,
                 variant=variant,
                 digital_content=(
-                    variant.digital_content if is_digital and variant else None
+                    variant.digital_content
+                    if is_digital and variant and hasattr(variant, "digital_content")
+                    else None
                 ),
             )
         )
